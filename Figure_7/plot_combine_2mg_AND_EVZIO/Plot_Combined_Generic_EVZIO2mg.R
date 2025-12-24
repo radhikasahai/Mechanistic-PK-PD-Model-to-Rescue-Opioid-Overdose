@@ -4,7 +4,7 @@
 #Description	 Script to reproduce Figure 7 of Manuscript # 2022-329
 
 
-mainfol="../population_outputs_2mg_40tsh_delays/CA_IM" #Location of Cardiac Arrest occurence data
+#mainfol="../population_outputs_2mg_40tsh_delays/CA_IM" #Location of Cardiac Arrest occurence data
 
 
 
@@ -37,26 +37,26 @@ for (fo in alllfolders) {
 	data2mg=dataEvzio2mg=c()
 	i=i+1
 	print("2mg")
-	data2mg=read.csv(sprintf("%s/All_CADo1PKReview_naloxone_formulation_Generic_conc_%s.csv",mainfol,fo)) # CA Population Data
+	#data2mg=read.csv(sprintf("%s/All_CADo1PKReview_naloxone_formulation_Generic_conc_%s.csv",mainfol,fo)) # CA Population Data
 	Generic_1d=read.csv(sprintf("%s/Im_plot_Generic/%s_ypred1.csv",mainfol2,dose[i])) # Optimal Patient Physiology data No naloxone
 	Generic_2d=read.csv(sprintf("%s/Im_plot_Generic/%s_ypred2.csv",mainfol2,dose[i])) # Optimal Patient Physiology data	One dose naloxone	
 	
-	data2mg$Ndose=c("No naloxone", "2mg/2ml")
+	#data2mg$Ndose=c("No naloxone", "2mg/2ml")
 	
 	
 	print("EVZIO")
 	
-	dataEvzio2mg=read.csv(sprintf("%s/All_CADo1PKReview_naloxone_formulation_EVZIO_conc_%s.csv",mainfol,fo)) # CA Population Data
+	#dataEvzio2mg=read.csv(sprintf("%s/All_CADo1PKReview_naloxone_formulation_EVZIO_conc_%s.csv",mainfol,fo)) # CA Population Data
 	EVZIO_1d=read.csv(sprintf("%s/Im_plot_EVZIO/%s_ypred1.csv",mainfol2,dose[i])) #Optimal Patient Physiology data No naloxone
 	EVZIO_2d=read.csv(sprintf("%s/Im_plot_EVZIO/%s_ypred2.csv",mainfol2,dose[i])) #Optimal Patient Physiology data One dose naloxone
-	dataEvzio2mg$Ndose=c("No naloxone", "2mg/0.4ml")
+	#dataEvzio2mg$Ndose=c("No naloxone", "2mg/0.4ml")
 	
 	names(Generic_1d)<-c("x","time","Vent","O2","Blood","PaCO2","PBO2","PlasmaN","CBF") 
 	names(Generic_2d)<-names(Generic_1d)
 	names(EVZIO_1d)<-names(Generic_1d)
 	names(EVZIO_2d)<-names(Generic_1d)
-	data2mg$type="b"
-	dataEvzio2mg$type="c"
+	#data2mg$type="b"
+	#dataEvzio2mg$type="c"
 	
 	Generic_1d$type="a"
 	Generic_2d$type="b"
@@ -100,35 +100,35 @@ if (min(EVZIO_2d$Blood)<=CABloodFlow){
 
 	All_time<-rbind(Generic_1d,Generic_2d,EVZIO_2d) # 0 dose naloxone is same for Generic + EVZIO
 	
-	A_data2mg<-data2mg[data2mg$Ndose %in% c("No naloxone","2mg/2ml"),]
-	A_data2mg$type[A_data2mg$Ndose=="No naloxone"]<-"a"
-	A_dataEvzio2mg<-dataEvzio2mg[dataEvzio2mg$Ndose %in% c("2mg/0.4ml"),] # Only need 1 0 dose bar 
+	#A_data2mg<-data2mg[data2mg$Ndose %in% c("No naloxone","2mg/2ml"),]
+	#A_data2mg$type[A_data2mg$Ndose=="No naloxone"]<-"a"
+	#A_dataEvzio2mg<-dataEvzio2mg[dataEvzio2mg$Ndose %in% c("2mg/0.4ml"),] # Only need 1 0 dose bar 
 	
-	both=rbind(A_data2mg,A_dataEvzio2mg)
-	both$dose<-dose[i]
-	both$delay<-delay[i]
-	All_doses<-rbind(All_doses,both)
+	#both=rbind(A_data2mg,A_dataEvzio2mg)
+	#both$dose<-dose[i]
+	#both$delay<-delay[i]
+	#All_doses<-rbind(All_doses,both)
 
 	gg_color_hue <- function(n) {
 		hues = seq(15, 375, length = n + 1)
 		hcl(h = hues, l = 65, c = 100)[1:n]
 	}
 	colorPalette = gg_color_hue(3)
-	both$Ndose <- factor(both$Ndose, levels = c("No naloxone","2mg/2ml","2mg/0.4ml"))
-	print(unique(both$type))
+	#both$Ndose <- factor(both$Ndose, levels = c("No naloxone","2mg/2ml","2mg/0.4ml"))
+	#print(unique(both$type))
 	
 	#----- Create Population Cardiac Arrest Figures
 	
-	p[[i]]<-ggplot(both,aes(x = as.factor(Ndose),y = 100-rowYesCA,fill = type)) +
-	geom_bar(stat = "identity",
-	position = "dodge")+ylim(0, 100)+xlab("") + ylab("")+
-	ggtitle("") +theme_bw()+
-	geom_errorbar(aes(ymin=100-emin,ymax=100-emax),width=.5)+#+
-			scale_fill_manual(name = "Naloxone Dose",values=c(a=colorPalette[1], 
-						b=colorPalette[2], c=colorPalette[3]), labels = c("No naloxone","IM 2 mg/2 mL", "IM 2 mg/0.4 mL")) +
+	# p[[i]]<-ggplot(both,aes(x = as.factor(Ndose),y = 100-rowYesCA,fill = type)) +
+	# geom_bar(stat = "identity",
+	# position = "dodge")+ylim(0, 100)+xlab("") + ylab("")+
+	# ggtitle("") +theme_bw()+
+	# geom_errorbar(aes(ymin=100-emin,ymax=100-emax),width=.5)+#+
+	# 		scale_fill_manual(name = "Naloxone Dose",values=c(a=colorPalette[1], 
+	# 					b=colorPalette[2], c=colorPalette[3]), labels = c("No naloxone","IM 2 mg/2 mL", "IM 2 mg/0.4 mL")) +
 		
-		theme(legend.position = "none",axis.text = element_text(size = 8))
-	ggsave(sprintf("results/CA_individual_%s.png",fo), p[[i]], width = 6, height = 4.5) 
+	# 	theme(legend.position = "none",axis.text = element_text(size = 8))
+	# ggsave(sprintf("results/CA_individual_%s.png",fo), p[[i]], width = 6, height = 4.5) 
 	
 
 	#------ Single Patient Ventilation Figures
@@ -293,11 +293,11 @@ p8[[i]]<-ggplot(All_time,aes(x=time/60,y=PBO2,color=type)) +
 
 
 #---- Combined CA figure
-ggsave(
-		filename = "results/All_CA_plots.pdf", 
-		plot = marrangeGrob(p, nrow=1, ncol=4), 
-		width = 8, height = 4
-)
+# ggsave(
+# 		filename = "results/All_CA_plots.pdf", 
+# 		plot = marrangeGrob(p, nrow=1, ncol=4), 
+# 		width = 8, height = 4
+# )
 
 
 
@@ -351,30 +351,30 @@ p33<-	p3[[3]]+ylab("")+ggtitle("")+theme(plot.title = element_text(size = 10))+ 
 					axis.text.y = element_blank())#,
 					#legend.position=c(.75,.85),legend.text = element_text(size=6),legend.background=element_blank(),legend.key.size= unit(.2, 'cm'))+labs(color="")
 	
-	p11<- p[[1]]+ylab("Cardiac Arrest (%)")+ggtitle("D")+
-			theme(plot.title = element_text(size = 10),axis.title.y=element_text(size=10),
-					axis.text.x=element_text(size=6),
-					legend.position="none")+
-					#legend.background=element_blank(),legend.key.size= unit(.2, 'cm'))+labs(fill="")+	
-			labs(x="Naloxone Doses")
+	# p11<- p[[1]]+ylab("Cardiac Arrest (%)")+ggtitle("D")+
+	# 		theme(plot.title = element_text(size = 10),axis.title.y=element_text(size=10),
+	# 				axis.text.x=element_text(size=6),
+	# 				legend.position="none")+
+	# 				#legend.background=element_blank(),legend.key.size= unit(.2, 'cm'))+labs(fill="")+	
+	# 		labs(x="Naloxone Doses")
 	
-	p12<-p[[2]]+ggtitle("")+theme(plot.title = element_text(size = 10))+   theme(axis.ticks.y = element_blank(),
-			axis.text.x=element_text(size=6),
-			axis.text.y = element_blank())+labs(x="Naloxone Doses")
+	# p12<-p[[2]]+ggtitle("")+theme(plot.title = element_text(size = 10))+   theme(axis.ticks.y = element_blank(),
+	# 		axis.text.x=element_text(size=6),
+	# 		axis.text.y = element_blank())+labs(x="Naloxone Doses")
 	
-	p13<- p[[3]]+ggtitle("")+theme(plot.title = element_text(size = 10))+   theme(axis.ticks.y = element_blank(),
-			axis.text.x=element_text(size=6),
-			axis.text.y = element_blank())+labs(x="Naloxone Doses")
+	# p13<- p[[3]]+ggtitle("")+theme(plot.title = element_text(size = 10))+   theme(axis.ticks.y = element_blank(),
+	# 		axis.text.x=element_text(size=6),
+	# 		axis.text.y = element_blank())+labs(x="Naloxone Doses")
 	
-	p14<-p[[4]]+ggtitle("")+theme(plot.title = element_text(size = 10))+   theme(axis.ticks.y = element_blank(),
-			axis.text.y = element_blank(),
-			axis.text.x=element_text(size=6))+labs(x="Naloxone Doses")
+	# p14<-p[[4]]+ggtitle("")+theme(plot.title = element_text(size = 10))+   theme(axis.ticks.y = element_blank(),
+	# 		axis.text.y = element_blank(),
+	# 		axis.text.x=element_text(size=6))+labs(x="Naloxone Doses")
 	
 	
 	
 	patch2<-p31+p32+p33+p34+plot_layout(ncol=4)
 	patch3<-p41+p42+p43+p44+plot_layout(ncol=4)		
-	patch4<-p11+p12+p13+p14+plot_layout(ncol=4)
+	# patch4<-p11+p12+p13+p14+plot_layout(ncol=4)
 	
 	
 	a<- theme(
@@ -384,11 +384,10 @@ p33<-	p3[[3]]+ylab("")+ggtitle("")+theme(plot.title = element_text(size = 10))+ 
 	)
 	
 	
-	patchall<-patch1 + patch2 + patch3 + patch4  +plot_layout(ncol = 4,nrow=4,widths=c(1,1,1,1))
+	#patchall<-patch1 + patch2 + patch3 + patch4  +plot_layout(ncol = 4,nrow=4,widths=c(1,1,1,1))
 	patchall2<-p21+a+p22+a+p23+a+p24+a+
 			p31+a+p32+a+p33+a+p34+a+
-			p41+a+p42+a+p43+a+p44+a+
-			p11+a+p12+a+p13+a+p14+a+plot_layout(ncol=4) #plot_annotation(tag_levels = 'A')
+			p41+a+p42+a+p43+a+p44+a+plot_layout(ncol=4) # Removed p11+p12+p13+p14
 	ggsave("results/Manuscript_Figure_7.pdf",patchall2)
 	
 
@@ -453,7 +452,7 @@ p33<-	p3[[3]]+ylab("")+ggtitle("")+theme(plot.title = element_text(size = 10))+ 
 					p61+a+p62+a+p63+a+p64+a+
 					p71+a+p72+a+p73+a+p74+a+
 					p81+a+p82+a+p83+a+p84+a+plot_layout(ncol=4) 
-			ggsave("results/Supplemental_Manuscript_Figure.pdf",patchall3)
+			ggsave("results/Supplemental_Manuscript_Figure_rs.pdf",patchall3)
 			
 				
 
