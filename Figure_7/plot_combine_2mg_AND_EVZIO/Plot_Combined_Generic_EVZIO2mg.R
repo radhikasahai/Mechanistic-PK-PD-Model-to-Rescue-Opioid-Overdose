@@ -388,7 +388,7 @@ p33<-	p3[[3]]+ylab("")+ggtitle("")+theme(plot.title = element_text(size = 10))+ 
 	patchall2<-p21+a+p22+a+p23+a+p24+a+
 			p31+a+p32+a+p33+a+p34+a+
 			p41+a+p42+a+p43+a+p44+a+plot_layout(ncol=4) # Removed p11+p12+p13+p14
-	ggsave("results/Manuscript_Figure_7.pdf",patchall2)
+	ggsave("results/Manuscript_Figure_7_rs.pdf",patchall2)
 	
 
 	
