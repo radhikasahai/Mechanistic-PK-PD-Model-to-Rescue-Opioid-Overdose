@@ -306,38 +306,41 @@ library(gridExtra)
 library(patchwork)
 	
 	
-			p21<-p2[[1]]+ggtitle("Fentanyl 1.63mg \n A")+ylab("Minute Ventilation \n (L/min)")+theme(plot.title = element_text(size = 10))+
-			theme(axis.title.x=element_text(size=10),axis.title.y=element_text(size=10))+  theme(#axis.ticks.x = element_blank(),
-					axis.text.x = element_blank())
-	p22<-p2[[2]]+ggtitle("Fentanyl 2.97mg \n ")+ylab("")+theme(plot.title = element_text(size = 10))+   theme(#axis.ticks.x = element_blank(),
-					axis.text.x = element_blank()) +   theme(axis.ticks.y = element_blank(),
-					axis.text.y = element_blank())
-	p23<-p2[[3]]+ggtitle("Carfentanil 0.012mg \n ")+ylab("")+theme(plot.title = element_text(size = 10))+   theme(#axis.ticks.x = element_blank(),
-					axis.text.x = element_blank()) +   theme(axis.ticks.y = element_blank(),
-					axis.text.y = element_blank())
-	p24<-p2[[4]]+ggtitle("Carfentanil 0.022mg \n ")+ylab("")+theme(plot.title = element_text(size = 10))+   theme(#axis.ticks.x = element_blank(),
-					axis.text.x = element_blank()) +   theme(axis.ticks.y = element_blank(),
-					axis.text.y = element_blank(),#,
-					legend.position=c(.65,.85),legend.text = element_text(size=6),legend.background=element_blank(),legend.key.size= unit(.25, 'cm'))+labs(color="")
+			p21<-p2[[1]]+ggtitle("Fentanyl 1.63mg \n A")+ylab("Minute Ventilation \n (L/min)")+xlab("Time (minutes)")+theme(plot.title = element_text(size = 10))+
+	theme(axis.title.x=element_text(size=10),axis.title.y=element_text(size=10))  # Removed axis.text.x = element_blank()
+
+p22<-p2[[2]]+ggtitle("Fentanyl 2.97mg \n ")+ylab("")+xlab("Time (minutes)")+theme(plot.title = element_text(size = 10))+
+	theme(axis.title.x=element_text(size=10)) +   theme(axis.ticks.y = element_blank(),
+		axis.text.y = element_blank())  # Removed axis.text.x = element_blank()
+
+p23<-p2[[3]]+ggtitle("Carfentanil 0.012mg \n ")+ylab("")+xlab("Time (minutes)")+theme(plot.title = element_text(size = 10))+
+	theme(axis.title.x=element_text(size=10)) +   theme(axis.ticks.y = element_blank(),
+		axis.text.y = element_blank())  # Removed axis.text.x = element_blank()
+
+p24<-p2[[4]]+ggtitle("Carfentanil 0.022mg \n ")+ylab("")+xlab("Time (minutes)")+theme(plot.title = element_text(size = 10))+
+	theme(axis.title.x=element_text(size=10)) +   theme(axis.ticks.y = element_blank(),
+		axis.text.y = element_blank(),
+		legend.position=c(.65,.85),legend.text = element_text(size=6),legend.background=element_blank(),legend.key.size= unit(.25, 'cm'))+labs(color="")  # Removed axis.text.x = element_blank()
 	
 	patch1<-p21+p22+p23+p24+plot_layout(ncol=4)
 	
 	
-	p31<-p3[[1]]+ylab("Arterial Oxygen \n Partial Pressure (mmHg)")+theme(axis.title.x=element_text(size=10),axis.title.y=element_text(size=10))+
-			ggtitle("B")+theme(plot.title = element_text(size = 10)) +   theme(#axis.ticks.x = element_blank(),
-					axis.text.x = element_blank())#+   theme(axis.ticks.y = element_blank(),
-	#axis.text.y = element_blank()) ,
-	p32<-p3[[2]]+ylab("")+ggtitle("")+theme(plot.title = element_text(size = 10))+   theme(#axis.ticks.x = element_blank(),
-					axis.text.x = element_blank())+   theme(axis.ticks.y = element_blank(),
-					axis.text.y = element_blank())
-p33<-	p3[[3]]+ylab("")+ggtitle("")+theme(plot.title = element_text(size = 10))+  theme(#axis.ticks.x = element_blank(),
-					axis.text.x = element_blank())+   theme(axis.ticks.y = element_blank(),
-					axis.text.y = element_blank())
-	p34<- p3[[4]]+ylab("")+ggtitle("")+theme(plot.title = element_text(size = 10))+  theme(#axis.ticks.x = element_blank(),
-					axis.text.x = element_blank())+   theme(axis.ticks.y = element_blank(),
-					axis.text.y = element_blank(),#,
-	legend.position=c(.65,.85),legend.text = element_text(size=6),legend.background=element_blank(),legend.key.size= unit(.25, 'cm'))+labs(color="")
-	
+	p31<-p3[[1]]+ylab("Arterial Oxygen \n Partial Pressure (mmHg)")+xlab("Time (minutes)")+theme(axis.title.x=element_text(size=10),axis.title.y=element_text(size=10))+
+	ggtitle("B")+theme(plot.title = element_text(size = 10))  # Removed axis.text.x = element_blank()
+
+p32<-p3[[2]]+ylab("")+xlab("Time (minutes)")+ggtitle("")+theme(plot.title = element_text(size = 10))+
+	theme(axis.title.x=element_text(size=10)) +   theme(axis.ticks.y = element_blank(),
+		axis.text.y = element_blank())  # Removed axis.text.x = element_blank()
+
+p33<-p3[[3]]+ylab("")+xlab("Time (minutes)")+ggtitle("")+theme(plot.title = element_text(size = 10))+
+	theme(axis.title.x=element_text(size=10)) +   theme(axis.ticks.y = element_blank(),
+		axis.text.y = element_blank())  # Removed axis.text.x = element_blank()
+
+p34<- p3[[4]]+ylab("")+xlab("Time (minutes)")+ggtitle("")+theme(plot.title = element_text(size = 10))+
+	theme(axis.title.x=element_text(size=10)) +   theme(axis.ticks.y = element_blank(),
+		axis.text.y = element_blank(),
+		legend.position=c(.65,.85),legend.text = element_text(size=6),legend.background=element_blank(),legend.key.size= unit(.25, 'cm'))+labs(color="")  # Removed axis.text.x = element_blank()
+
 	p41<- p4[[1]]+ylab("Cardiac Output \n (L/min)")+xlab("Time (minutes)")+theme(axis.title.x=element_text(size=10),axis.title.y=element_text(size=10))+ggtitle("C")+theme(plot.title = element_text(size = 10))
 	p42<- p4[[2]]+xlab("Time (minutes)")+ylab("")+theme(axis.title.x=element_text(size=10))+
 			ggtitle("")+theme(plot.title = element_text(size = 10))+   theme(axis.ticks.y = element_blank(),
@@ -388,7 +391,7 @@ p33<-	p3[[3]]+ylab("")+ggtitle("")+theme(plot.title = element_text(size = 10))+ 
 	patchall2<-p21+a+p22+a+p23+a+p24+a+
 			p31+a+p32+a+p33+a+p34+a+
 			p41+a+p42+a+p43+a+p44+a+plot_layout(ncol=4) # Removed p11+p12+p13+p14
-	ggsave("results/Manuscript_Figure_7_rs.pdf",patchall2)
+	ggsave("results/Manuscript_Figure_7_rs.pdf",patchall2,width=14,height=9) #make wider
 	
 
 	
@@ -447,12 +450,12 @@ p33<-	p3[[3]]+ylab("")+ggtitle("")+theme(plot.title = element_text(size = 10))+ 
 					scale_y_continuous(breaks=seq(0,40,20),limits=c(0,50))
 				
 				
-				
-			patchall3<-p51+a+p52+a+p53+a+p54+a+
-					p61+a+p62+a+p63+a+p64+a+
-					p71+a+p72+a+p73+a+p74+a+
-					p81+a+p82+a+p83+a+p84+a+plot_layout(ncol=4) 
-			ggsave("results/Supplemental_Manuscript_Figure_rs.pdf",patchall3)
+			#commented supplemental figure for now
+			# patchall3<-p51+a+p52+a+p53+a+p54+a+
+			# 		p61+a+p62+a+p63+a+p64+a+
+			# 		p71+a+p72+a+p73+a+p74+a+
+			# 		p81+a+p82+a+p83+a+p84+a+plot_layout(ncol=4) 
+			# ggsave("results/Supplemental_Manuscript_Figure_rs.pdf",patchall3)
 			
 				
 
