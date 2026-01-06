@@ -303,24 +303,48 @@ if (consider_delay_dist=="yes") {
 		plotFolder=sprintf("outputs/results/Im_plot_%s/",formulation)
 		system(paste0("mkdir -p ",plotFolder))		
 		
-		#Generate physiological responses for optimal patient (patientidx=2001)
+				#Generate physiological responses for optimal patient (patientidx=2001)
 		if(Plot_yn=="yes"){
+			# Always save the no-naloxone simulation (pp[[1]][[1]])
 			ypred1=pp[[1]][[1]][,c("time","Minute ventilation (l/min)",
 							"Arterial O2 partial pressure (mm Hg)","Total blood flow (l/min)",
 							"Arterial CO2 partial pressure (mm Hg)",
 							"Brain O2 partial pressure (mm Hg)",
 							"Antagonist plasma concentration (ng/ml)",
 							"Blood flow to brain (l/min)")]
-			ypred2=pp[[1]][[2]][,c("time","Minute ventilation (l/min)",
-							"Arterial O2 partial pressure (mm Hg)","Total blood flow (l/min)",
-							"Arterial CO2 partial pressure (mm Hg)",
-							"Brain O2 partial pressure (mm Hg)",
-							"Antagonist plasma concentration (ng/ml)",
-							"Blood flow to brain (l/min)")]
 			write.csv(ypred1,sprintf("%s/%s_%s_ypred1.csv",plotFolder,opioid,concstr))
-			write.csv(ypred2,sprintf("%s/%s_%s_ypred2.csv",plotFolder,opioid,concstr))
+			
+			# Only save naloxone simulation if it exists (pp[[1]][[2]])
+			if(length(pp[[1]]) >= 2){
+				ypred2=pp[[1]][[2]][,c("time","Minute ventilation (l/min)",
+								"Arterial O2 partial pressure (mm Hg)","Total blood flow (l/min)",
+								"Arterial CO2 partial pressure (mm Hg)",
+								"Brain O2 partial pressure (mm Hg)",
+								"Antagonist plasma concentration (ng/ml)",
+								"Blood flow to brain (l/min)")]
+				write.csv(ypred2,sprintf("%s/%s_%s_ypred2.csv",plotFolder,opioid,concstr))
+			} else {
+				cat("Note: No naloxone rescue simulation for dose", uniqdose[opioid_doseidx], "mg (ventilation did not drop below threshold)\n")
+			}
 			
 		}
+		#if(Plot_yn=="yes"){
+		# 	ypred1=pp[[1]][[1]][,c("time","Minute ventilation (l/min)",
+		# 					"Arterial O2 partial pressure (mm Hg)","Total blood flow (l/min)",
+		# 					"Arterial CO2 partial pressure (mm Hg)",
+		# 					"Brain O2 partial pressure (mm Hg)",
+		# 					"Antagonist plasma concentration (ng/ml)",
+		# 					"Blood flow to brain (l/min)")]
+		# 	ypred2=pp[[1]][[2]][,c("time","Minute ventilation (l/min)",
+		# 					"Arterial O2 partial pressure (mm Hg)","Total blood flow (l/min)",
+		# 					"Arterial CO2 partial pressure (mm Hg)",
+		# 					"Brain O2 partial pressure (mm Hg)",
+		# 					"Antagonist plasma concentration (ng/ml)",
+		# 					"Blood flow to brain (l/min)")]
+		# 	write.csv(ypred1,sprintf("%s/%s_%s_ypred1.csv",plotFolder,opioid,concstr))
+		# 	write.csv(ypred2,sprintf("%s/%s_%s_ypred2.csv",plotFolder,opioid,concstr))
+			
+		# }
 		
 		
 		
