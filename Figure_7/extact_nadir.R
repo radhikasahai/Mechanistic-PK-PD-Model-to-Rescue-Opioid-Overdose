@@ -2,7 +2,7 @@
 library(ggplot2)
 
 # Define doses
-doses <- c(0, 0.2, 0.4, 0.8, 1.6, 3.2)
+doses <- c(0, 0.2, 0.4, 0.8, 1.6)
 formulation <- "Generic"
 opioid <- "fentanyl"
 

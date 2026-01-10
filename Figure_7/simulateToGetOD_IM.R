@@ -51,6 +51,9 @@ gg_color_hue <- function(n) {
 colorPalette = gg_color_hue(6)
 #========================================
 #load required scripts====================================================
+#dyn.load(paste0(modelFolder,"delaymymod.so")) #Compiled opioid model
+# Unload if already loaded, then reload
+try(dyn.unload(paste0(modelFolder,"delaymymod.so")), silent=TRUE)
 dyn.load(paste0(modelFolder,"delaymymod.so")) #Compiled opioid model
 source(paste0(modelFolder,"delaypars.R"))	  #Default parameters
 source(paste0(modelFolder,"delaystates.R"))

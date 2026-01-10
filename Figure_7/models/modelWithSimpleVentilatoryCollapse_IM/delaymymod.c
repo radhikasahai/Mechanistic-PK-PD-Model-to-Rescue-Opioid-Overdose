@@ -3,7 +3,8 @@
 #include <Rdefines.h>
 #include <R_ext/Rdynload.h>
 #include <time.h>
-static double parms[106];
+//static double parms[106];
+static double parms[107];  // Increased from 106 to 107 for Ventilation_floor
 #define F parms[0]
 #define kin parms[1]
 #define kout parms[2]
@@ -109,6 +110,7 @@ static double parms[106];
 #define k21N parms[102]
 #define V2 parms[103]
 #define timeout parms[104]
+#define Ventilation_floor parms[106]  // Minimum ventilation in L/min (ceiling effect)
 #define starttime parms[105]
 double CA_o2_happen=0;
 double CA_co2_happen=0;
@@ -212,7 +214,8 @@ void lagvalue(double T, int *nr, int N, double *yout) {
 }
 
 void initmod(void (* odeparms)(int *, double *)){
-	int N=106;
+	//int N=106;
+	int N=107;
 	odeparms(&N, parms);}
 
 void derivs (int *neq, double *t, double *y, double *ydot, double *yout, int *ip){
@@ -539,8 +542,11 @@ void derivs (int *neq, double *t, double *y, double *ydot, double *yout, int *ip
 	if(peripheral_drive +y[21] >0){
 		chemoreflex_drive = peripheral_drive +y[21];
 	}
+	// double totalVentilation = y[24] + W - Kf + chemoreflex_drive;
+	// double Venti = totalVentilation*Bmax/60.00;
 	double totalVentilation = y[24] + W - Kf + chemoreflex_drive;
 	double Venti = totalVentilation*Bmax/60.00;
+
 	double residualWakefulnessDrive=W - Kf;
 	//	if (Q<=4.9*.2/60){residualWakefulnessDrive=0; chemoreflex_drive=0; Venti=0;}
 	if (Q<=4.9*.2/60){
@@ -551,6 +557,32 @@ void derivs (int *neq, double *t, double *y, double *ydot, double *yout, int *ip
 	}
 	if(Venti< 0)
 		Venti=0;
+	// // DEBUG: Print baseline ventilation components (only at first time step or when t is small)
+	// static int debug_printed = 0;
+	// if(debug_printed == 0 && *t < 0.1){
+	// 	Rprintf("DEBUG Baseline Ventilation Calculation:\n");
+	// 	Rprintf("  t = %f\n", *t);
+	// 	Rprintf("  y[24] = %f\n", y[24]);
+	// 	Rprintf("  W = %f\n", W);
+	// 	Rprintf("  Kf = %f (y[9]=%f, P3=%f, Wmax=%f)\n", Kf, y[9], P3, Wmax);
+	// 	Rprintf("  chemoreflex_drive = %f\n", chemoreflex_drive);
+	// 	Rprintf("  totalVentilation = %f + %f - %f + %f = %f\n", y[24], W, Kf, chemoreflex_drive, totalVentilation);
+	// 	Rprintf("  Venti (before ceiling) = %f * %f / 60.00 = %f L/min\n", totalVentilation, Bmax, Venti);
+	// 	Rprintf("  Ventilation_floor = %f\n", Ventilation_floor);
+	// 	Rprintf("  Q = %f\n", Q);
+	// 	debug_printed = 1;
+	// }
+
+	// // Apply ceiling effect: ensure minimum ventilation (not done for first part 2.1)
+	// double Venti_min = Ventilation_floor;  // Minimum in L/min
+	// double Venti_before_ceiling = Venti;  // Store for debugging
+	// if(Venti < Venti_min){
+	// 	Venti = Venti_min;
+	// 	// DEBUG: Print when ceiling effect is applied
+	// 	if(debug_printed == 1){
+	// 		Rprintf("  CEILING EFFECT APPLIED: Venti was %f, clamped to %f\n", Venti_before_ceiling, Venti_min);
+	// 	}
+	// }
 
 	double nSaturation=2.6;
 	double k3=26.6; //mm Hg

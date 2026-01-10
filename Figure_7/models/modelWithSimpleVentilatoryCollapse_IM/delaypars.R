@@ -73,4 +73,6 @@ Shock=0,
 k12N=45.2,
 k21N=45.2,
 V2=108900,
-timeout=600,starttime=30)
+timeout=600,starttime=30,
+Ventilation_floor=0.0)  # Minimum ventilation in L/min (ceiling effect) # (from task2.1)
+#Ventilation_floor=3.0)
