@@ -2,7 +2,7 @@
 library(ggplot2)
 
 # Define doses
-doses <- c(0, 0.2, 0.4, 0.8, 1.6)
+doses <- c(0, 0.2, 0.4, 0.8, 1.6, 3.2)
 formulation <- "Generic"
 opioid <- "fentanyl"
 
@@ -56,14 +56,36 @@ if(length(dose_results) > 0){
   # Save results
   write.csv(results_df, "outputs/nadir_results.csv", row.names=FALSE)
   
-  # Create plot
+#   # Create plot 2.1
+#   nadir_plot <- ggplot(results_df, aes(x=dose_mg, y=nadir_L_per_min)) +
+#     geom_point(size=3, color="steelblue") +
+#     geom_line(color="steelblue", linewidth=1) +
+#     labs(
+#       x = "Fentanyl Dose (mg)",
+#       y = "Nadir Minute Ventilation (L/min)",
+#       title = "Nadir Minute Ventilation vs Fentanyl Dose\n(No Naloxone Administration)"
+#     ) +
+#     theme_bw() +
+#     theme(plot.title = element_text(hjust=0.5, size=14, face="bold")) +
+#     scale_x_continuous(breaks=doses)
+  
+#   ggsave("outputs/nadir_plot.pdf", plot=nadir_plot, width=8, height=6)
+#   ggsave("outputs/nadir_plot.png", plot=nadir_plot, width=8, height=6, dpi=300)
+  
+#   cat("\nPlot saved to: outputs/nadir_plot.pdf\n")
+# } else {
+#   cat("\nERROR: No simulation files found!\n")
+#   cat("Please run simulations first.\n")
+# }
+
+  # Create plot 2.2 (with ceiling effect)
   nadir_plot <- ggplot(results_df, aes(x=dose_mg, y=nadir_L_per_min)) +
     geom_point(size=3, color="steelblue") +
     geom_line(color="steelblue", linewidth=1) +
     labs(
       x = "Fentanyl Dose (mg)",
       y = "Nadir Minute Ventilation (L/min)",
-      title = "Nadir Minute Ventilation vs Fentanyl Dose\n(No Naloxone Administration)"
+      title = "Nadir Minute Ventilation vs Fentanyl Dose\n(No Naloxone Administration) with Ceiling Effect"
     ) +
     theme_bw() +
     theme(plot.title = element_text(hjust=0.5, size=14, face="bold")) +

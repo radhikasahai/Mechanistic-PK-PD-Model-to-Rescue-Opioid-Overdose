@@ -4,7 +4,8 @@
 #include <R_ext/Rdynload.h>
 #include <time.h>
 //static double parms[106];
-static double parms[107];  // Increased from 106 to 107 for Ventilation_floor
+//static double parms[107];  // Increased from 106 to 107 for Ventilation_floor
+static double parms[108];  // Increased from 107 to 108 for PD_ceiling_factor
 #define F parms[0]
 #define kin parms[1]
 #define kout parms[2]
@@ -112,6 +113,7 @@ static double parms[107];  // Increased from 106 to 107 for Ventilation_floor
 #define timeout parms[104]
 #define Ventilation_floor parms[106]  // Minimum ventilation in L/min (ceiling effect)
 #define starttime parms[105]
+#define PD_ceiling_factor parms[107]  // NEW: Ceiling effect for PD relationships
 double CA_o2_happen=0;
 double CA_co2_happen=0;
 // assisting function 
@@ -215,7 +217,7 @@ void lagvalue(double T, int *nr, int N, double *yout) {
 
 void initmod(void (* odeparms)(int *, double *)){
 	//int N=106;
-	int N=107;
+	int N=108;  // Updated from 107 to 108 for PD_ceiling_factor;
 	odeparms(&N, parms);}
 
 void derivs (int *neq, double *t, double *y, double *ydot, double *yout, int *ip){
@@ -272,13 +274,21 @@ void derivs (int *neq, double *t, double *y, double *ydot, double *yout, int *ip
 	Cim26_e=Cim26_e_co2+Cim26_e_o2;
 
 
-
-
-	double Kf = Wmax*pow(y[9],P3);
+	// Modified Kf calculation with ceiling effect
+	// At 100% binding (y[9]=1), Kf = Wmax*(1-PD_ceiling_factor) instead of Wmax
+	// This ensures residual wakefulness drive = Wmax*PD_ceiling_factor
+	double effective_binding = pow(y[9],P3);
+	double Kf = Wmax * effective_binding * (1.0 - PD_ceiling_factor);
 	double fracW = (W - Kf)/6.62;
 	if(fracW <0){
 		fracW = 0;
 	}
+
+	// double Kf = Wmax*pow(y[9],P3);
+	// double fracW = (W - Kf)/6.62;
+	// if(fracW <0){
+	// 	fracW = 0;
+	// }
 	double M_B_co2_real=M_B_co2*pow(fracW,P2); // CO2 brain metabolism
 	double M_T_co2_real=M_T_co2*pow(fracW,P2); // CO2 tissue metabolism
 	double M_B_o2_real=M_B_o2_0*pow(fracW,P2); // O2 brain metabolism
@@ -509,15 +519,31 @@ void derivs (int *neq, double *t, double *y, double *ydot, double *yout, int *ip
 		psai_o2=2;
 		//	y[19]=2;
 	}
+	// double ReactionFlux25=1.00/tau_o2*(psai_o2 - y[19]);
+	// double Plag_f_pc=K_fpc*log(Plag_P_a_co2/Bp)*(f_pc_max+f_pc_min*exp((Plag_P_a_o2 - P_a_o2_c)/K_pc))/(1+exp((Plag_P_a_o2-P_a_o2_c)/K_pc));
+	// double AV1=1-pow(y[9],P1);
+
+	// /*Plag drive */
+	// double ReactionFlux26=1.00/tau_Dp*(-y[20] + AV1*G_Dp*(Plag_f_pc - f_pc_0));
+
+	// /*Clag drive */
+	// double AV2 = 1 - pow(y[9],P1);
+	// double ReactionFlux27 = 1.00/tau_Dc*(-y[21] + AV2*G_Dc*(Clag_P_B_co2 - P_B_co2_0));
 	double ReactionFlux25=1.00/tau_o2*(psai_o2 - y[19]);
 	double Plag_f_pc=K_fpc*log(Plag_P_a_co2/Bp)*(f_pc_max+f_pc_min*exp((Plag_P_a_o2 - P_a_o2_c)/K_pc))/(1+exp((Plag_P_a_o2-P_a_o2_c)/K_pc));
-	double AV1=1-pow(y[9],P1);
+	
+	// Modified AV1 calculation with ceiling effect
+	// At 100% binding, AV1 = PD_ceiling_factor instead of 0
+	double effective_binding_P1 = pow(y[9],P1);
+	double AV1 = PD_ceiling_factor + (1.0 - PD_ceiling_factor) * (1.0 - effective_binding_P1);
 
 	/*Plag drive */
 	double ReactionFlux26=1.00/tau_Dp*(-y[20] + AV1*G_Dp*(Plag_f_pc - f_pc_0));
 
 	/*Clag drive */
-	double AV2 = 1 - pow(y[9],P1);
+	// Modified AV2 calculation with ceiling effect
+	// At 100% binding, AV2 = PD_ceiling_factor instead of 0
+	double AV2 = PD_ceiling_factor + (1.0 - PD_ceiling_factor) * (1.0 - effective_binding_P1);
 	double ReactionFlux27 = 1.00/tau_Dc*(-y[21] + AV2*G_Dc*(Clag_P_B_co2 - P_B_co2_0));
 	double Hstat;
 	if (P_B_o2 <= theta_Hmin) {

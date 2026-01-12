@@ -74,5 +74,8 @@ k12N=45.2,
 k21N=45.2,
 V2=108900,
 timeout=600,starttime=30,
-Ventilation_floor=0.0)  # Minimum ventilation in L/min (ceiling effect) # (from task2.1)
+Ventilation_floor=0.0, # Minimum ventilation in L/min (ceiling effect) 
+PD_ceiling_factor=0.45)  # NEW: Ceiling effect factor (0-1). Higher = more residual ventilation at max binding
+# For 3 L/min plateau: ~0.45 means ~45% of wakefulness drive remains even at 100% binding
+
 #Ventilation_floor=3.0)
