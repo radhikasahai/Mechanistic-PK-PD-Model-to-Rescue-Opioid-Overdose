@@ -3,7 +3,8 @@
 #include <Rdefines.h>
 #include <R_ext/Rdynload.h>
 #include <time.h>
-static double parms[106];
+//static double parms[106];
+static double parms[107];  // Increased from 106 to 107 for fixed_expired_co2
 #define F parms[0]
 #define kin parms[1]
 #define kout parms[2]
@@ -109,6 +110,7 @@ static double parms[106];
 #define k21N parms[102]
 #define V2 parms[103]
 #define timeout parms[104]
+#define fixed_expired_co2 parms[106]  // Fixed expired CO2 (0 = body-controlled, >0 = machine-controlled)
 #define starttime parms[105]
 double CA_o2_happen=0;
 double CA_co2_happen=0;
@@ -212,13 +214,19 @@ void lagvalue(double T, int *nr, int N, double *yout) {
 }
 
 void initmod(void (* odeparms)(int *, double *)){
-	int N=106;
+	int N=107;  // Updated from 106 to 107 for fixed_expired_co2
 	odeparms(&N, parms);}
 
-void derivs (int *neq, double *t, double *y, double *ydot, double *yout, int *ip){
-	if (ip[0] < 0 ) error("nout not enough!");
-	time_t s = time(NULL);
-	if((int) s - (int) starttime > timeout) error("timeout!");
+	void derivs (int *neq, double *t, double *y, double *ydot, double *yout, int *ip){
+		if (ip[0] < 0 ) error("nout not enough!");
+		time_t s = time(NULL);
+		if((int) s - (int) starttime > timeout) error("timeout!");
+		
+		// Scenario 3: Fix expired CO2 if machine-controlled
+		if(fixed_expired_co2 > 0){
+			y[11] = fixed_expired_co2;  // Force expired CO2 to fixed value
+		}
+		
 	double* intermediate_list= calc_intermediate(y[11],y[12],y[13],y[14],y[15],y[16],y[18],y[19],y[25],y[26],y[26]);
 	double P_B_co2=intermediate_list[0];  double P_Vb_co2=intermediate_list[1];
 	double P_B_o2=intermediate_list[2];  double P_Vb_o2=intermediate_list[3];
@@ -594,7 +602,15 @@ void derivs (int *neq, double *t, double *y, double *ydot, double *yout, int *ip
 	ydot[8] = (k1*1e6*y[5]*1000.00/VPC/Mmass)-(k1*y[8]);
 	ydot[9] = (A1*(1-y[9]-y[10])*(pow(y[8],n)))-(B1*y[9]);
 	ydot[10] = (A2*(1-y[9]-y[10])*(pow(y[4],n2)))-(B2*y[10]);
-	ydot[11] = offCo2*(1.00/V_A*(Venti*(P_I_co2 - y[11]) + lumbda*(Qb+Qt)*(1-s1)*(C_V_co2 - C_e_co2)));
+	//ydot[11] = offCo2*(1.00/V_A*(Venti*(P_I_co2 - y[11]) + lumbda*(Qb+Qt)*(1-s1)*(C_V_co2 - C_e_co2)));
+	// Set expired CO2 derivative
+	if(fixed_expired_co2 > 0){
+		// Machine-controlled: expired CO2 is fixed, no change over time
+		ydot[11] = 0;
+	} else {
+		// Body-controlled: normal ODE for expired CO2
+		ydot[11] = offCo2*(1.00/V_A*(Venti*(P_I_co2 - y[11]) + lumbda*(Qb+Qt)*(1-s1)*(C_V_co2 - C_e_co2)));
+	}
 	ydot[12] = offO2*(1.00/V_A*(Venti*(y[17] - y[12]) + lumbda*(Qb+Qt)*(1-s1)*(C_V_o2 - C_e_o2)));
 	ydot[13] = ReactionFlux19; /* dC_B_co2 */
 	ydot[14] = ReactionFlux20; /* dC_B_o2 */

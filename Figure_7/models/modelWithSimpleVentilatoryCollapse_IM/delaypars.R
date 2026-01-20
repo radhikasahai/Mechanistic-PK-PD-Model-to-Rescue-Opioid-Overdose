@@ -19,8 +19,8 @@ n2=0.8856,
 V1=135400,
 Mmass=336.4,
 V_A=3.28,
-#P_I_co2=0,
-P_I_co2=53.2,  # Changed from 0 to 7% CO2 (0.07 * 760 = 53.2 mm Hg)
+P_I_co2=0,
+#P_I_co2=53.2,  # Changed from 0 to 7% CO2 (0.07 * 760 = 53.2 mm Hg) task2part2
 Wmax=6.62,
 #Wmax=2.0,  # Reduced from 6.62 to match sleep state task2part1
 lumbda=863,
@@ -76,4 +76,5 @@ Shock=0,
 k12N=45.2,
 k21N=45.2,
 V2=108900,
-timeout=600,starttime=30)
+timeout=600,starttime=30,
+fixed_expired_co2=0)  # 0 = body-controlled, >0 = machine-controlled at this value (mm Hg) task2part3

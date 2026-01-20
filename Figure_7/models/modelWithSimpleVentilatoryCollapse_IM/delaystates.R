@@ -16,8 +16,8 @@ C_B_co2=0.645,
 C_B_o2=9.78E-4,
 C_T_co2=0.605,
 C_T_o2=13E-4,
-#P_I_o2=149,
-P_I_o2=380,  # Changed from 149 to 50% O2 (0.50 * 760 = 380 mm Hg)
+P_I_o2=149,
+#P_I_o2=380,  # Changed from 149 to 50% O2 (0.50 * 760 = 380 mm Hg) task2part2
 yco2=0,
 yo2=0,
 Dp=0,
